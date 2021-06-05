@@ -4,7 +4,7 @@ import torch.nn as nn
 
 class EncoderBlock(nn.Module):
 
-    def __init__(self, latent_dim, in_channels=3):
+    def __init__(self, in_channels=3):
 
         self(EncoderBlock, self).__init__()
         pass

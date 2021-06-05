@@ -12,7 +12,9 @@ import torchmetrics.functional as FM
 
 class VAE(pl.LightningModule):
 
-    def __init__(self, latent_dim, encoder=EncoderBlock, decoder=DecoderBlock):
+    def __init__(self, latent_dim=256,
+                 encoder=EncoderBlock(), decoder=DecoderBlock()):
+
         super(VAE, self).__init__()
         self.enc = encoder
         self.dec = decoder
