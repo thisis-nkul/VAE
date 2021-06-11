@@ -23,11 +23,11 @@ class VAE(pl.LightningModule):
 
         enc_out_shape = self.encoder.get_output_shape(C, H, W)
 
-        self.aux_channels = enc_out_shape[0]
+        self.aux_C, self.aux_H, self.aux_W = enc_out_shape
         # the no. of output channels by encoder,
         # these will also be the number of channels we will be feed to decoder
 
-        self.decoder = DecoderBlock(self.aux_channels, C) if decoder is None\
+        self.decoder = DecoderBlock(self.aux_C, C) if decoder is None\
             else decoder
 
         # if output is CxHxW from Encoder, we'll average out along H and W
@@ -35,8 +35,9 @@ class VAE(pl.LightningModule):
         self.mu_layer = nn.Linear(enc_out_shape[0], latent_dim)
         self.logvar_layer = nn.Linear(enc_out_shape[0], latent_dim)
 
-        self.decode_latent = nn.Linear(latent_dim, self.aux_channels*4*4)
-        # this will be reshaped to self.aux_channelsx4x4
+        self.decode_latent = nn.Linear(latent_dim,
+                                       self.aux_C*self.aux_H*self.aux_W)
+        # the output of this will be reshaped to aux_C x aux_H x aux_W
 
     def forward(self, x):
         x, mu, logvar = self.encode(x)
@@ -63,7 +64,7 @@ class VAE(pl.LightningModule):
 
     def decode(self, x):
         x = self.decode_latent(x)
-        x = x.view(-1, self.aux_channels, 4, 4)
+        x = x.view(-1, self.aux_C, self.aux_H, self.aux_W)
         x = self.decoder(x)
 
         return x
