@@ -32,8 +32,8 @@ class VAE(pl.LightningModule):
 
         # if output is CxHxW from Encoder, we'll average out along H and W
 
-        self.mu_layer = nn.Linear(enc_out_shape[0], latent_dim)
-        self.logvar_layer = nn.Linear(enc_out_shape[0], latent_dim)
+        self.mu_layer = nn.Linear(self.aux_C, latent_dim)
+        self.logvar_layer = nn.Linear(self.aux_C, latent_dim)
 
         self.decode_latent = nn.Linear(latent_dim,
                                        self.aux_C*self.aux_H*self.aux_W)
