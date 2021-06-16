@@ -45,9 +45,9 @@ class DecoderBlock(nn.Module):
 
         super(DecoderBlock, self).__init__()
 
-        features = [in_channels, 512, 256, 128, 64, 32, out_channels]
-        n_layers = [None, 4, 4, 4, 4, 2, 1]
-        k_sizes = [None, 3, 3, 3, 5, 3, 3]
+        features = [in_channels, 512, 256, 128, 64, out_channels]
+        n_layers = [None, 4, 4, 4, 4, 1]
+        k_sizes = [None, 3, 3, 3, 5, 3]
 
         self.conv_modules = nn.ModuleList([])
 
