@@ -47,7 +47,7 @@ class EncoderBlock(nn.Module):
 
         super(EncoderBlock, self).__init__()
 
-        features = [in_channels, 64, 128, 256, 512, 1024]
+        features = [in_channels, 32, 64, 128, 256, 1024]
         n_layers = [None, 4, 4, 4, 4, 2]
         k_sizes = [None, 3, 3, 3, 5, 5]
         # None: bcz we won't be having conv layers which output in_channels
