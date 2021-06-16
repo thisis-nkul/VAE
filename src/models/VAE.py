@@ -3,11 +3,8 @@ import torch.nn as nn
 from .encoder import EncoderBlock
 from .decoder import DecoderBlock
 import torch
-"""
 import torch.optim as optim
 import torch.nn.functional as F
-import torchmetrics.functional as FM
-"""
 
 
 class VAE(pl.LightningModule):
@@ -70,13 +67,37 @@ class VAE(pl.LightningModule):
         return x
 
     def _step(self, batch):
-        pass
+        inp, _ = batch
+        x, mu, logvar = self(inp)
+
+        loss = self.get_loss(inp, x, mu, logvar)
+
+        return loss
+
+    def get_loss(self, inp, recon, mu, logvar):
+
+        kld_loss = torch.mean(-0.5*torch.sum(1 + logvar - mu ** 2
+                                             - logvar.exp(), dim=1),
+                              dim=0)
+
+        recon_loss = F.mse_loss(inp, recon)
+
+        loss = recon_loss + kld_loss / inp.shape[0]
+
+        self.log('recon_loss', recon_loss)
+        self.log('kld_loss', kld_loss)
+
+        return loss
 
     def training_step(self, batch, batch_idx):
-        pass
+        loss = self._step(batch)
+        self.log('train_loss', loss, prog_bar=True)
+        return loss
 
     def validation_step(self, batch, batch_idx):
-        pass
+        loss = self._step(batch)
+        self.log('val_loss', loss, prog_bar=True)
 
-    def test_step(self, *args, **kwargs):
-        pass
+    def configure_optimizers(self):
+        opt = optim.SGD(self.parameters(), lr=0.0001)
+        return opt
