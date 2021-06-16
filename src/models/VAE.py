@@ -82,7 +82,7 @@ class VAE(pl.LightningModule):
 
         recon_loss = F.mse_loss(inp, recon)
 
-        loss = recon_loss + kld_loss / inp.shape[0]
+        loss = recon_loss + kld_loss
 
         self.log('recon_loss', recon_loss)
         self.log('kld_loss', kld_loss)
