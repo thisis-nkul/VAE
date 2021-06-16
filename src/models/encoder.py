@@ -4,8 +4,8 @@ import torch.nn as nn
 
 class ConvBlock(nn.Module):
 
-    def __init__(self, in_features, out_features, k_size,
-                 nb_layers, maxpool=True, batch_norm=True, padding=None):
+    def __init__(self, in_features, out_features, k_size, nb_layers,
+                 maxpool=True, batch_norm=True, padding=None, dropout_p=0.2):
 
         # nb_layers: number of conv layers to use
         # k_size: dimensions of the kernel to use
@@ -25,6 +25,9 @@ class ConvBlock(nn.Module):
 
             self.conv_layers.append(layer)
             self.conv_layers.append(nn.ReLU())
+
+            if (i+1) % 2 == 0:
+                self.conv_layers.append(nn.Dropout(dropout_p))
 
         if batch_norm:
             self.conv_layers.append(nn.BatchNorm2d(out_features))
